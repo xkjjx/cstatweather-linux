@@ -1,0 +1,7 @@
+twitterKeys.py
+githubtoken.txt
+keys.json
+fileDump/
+.idea/
+.venv/
+__pycache__/
