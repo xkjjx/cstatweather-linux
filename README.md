@@ -1,0 +1,1 @@
+# cstatweather-manjaro
