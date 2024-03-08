@@ -24,10 +24,4 @@ def postAll():
 
 
 if __name__ == "__main__":
-    setAccessToken("EAAQ0HFZAgp20BOZCUx5N8Eu6HfXGSln3kFZA2GSdkUmUwr2vq5rZB1xJ6eWJFO3IsbGZArjDwlrwlCWUqLqEY4l6h1w8ZClqW5ZAd3GZCfveGyNWK8avjiw9ifhPvpgfxAnyNwUQ1GOQn58ZBqW8AV84vz9wIqUGhxpEJiLSkaLMaert6YmWROZCZC8GEKwshL33tDoWOpd3W6qKkNG0AKQaZAzmZCpekuyLr")
-    #renewToken()
-    postOnIG()
-    #postOnTwitter()
-    # postOnIG()
-    # renewToken()
-    sendEmail("Success")
+    postAll()

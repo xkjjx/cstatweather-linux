@@ -1,6 +1,7 @@
 twitterKeys.py
 githubtoken.txt
 keys.json
+!fileDump/dummy.txt
 fileDump/
 .idea/
 .venv/
