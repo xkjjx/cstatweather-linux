@@ -16,7 +16,7 @@ def postOnTwitter():
     api = tweepy.API(auth)
 
     if imageSaved:
-        media = api.media_upload("fileDump/landscapeVid.mp4")
+        media = api.media_upload("/app/files/fileDump/landscapeVid.mp4")
         time.sleep(15)
         client.create_tweet(text=postText,media_ids=[media.media_id])
         "Succesfully posted with image landscapepic.jpeg\n"

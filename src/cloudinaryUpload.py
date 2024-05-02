@@ -2,7 +2,7 @@ import cloudinary
 from cloudinary.uploader import upload
 import json
 
-with open("keys.json") as file:
+with open("/app/src/keys.json") as file:
     keyData = json.load(file)
 
 key = keyData["cloud_key"]
@@ -19,5 +19,5 @@ def cloudinaryVideoUpload(name,localName):
 
 
 if __name__ == "__main__":
-    cloudinaryVideoUpload("test","fileDump/portraitVid.mp4")
+    cloudinaryVideoUpload("test","/app/files/fileDump/portraitVid.mp4")
 

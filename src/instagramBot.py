@@ -5,7 +5,7 @@ import json
 
 cstatPlaceID = 4682464
 
-with open("keys.json") as file:
+with open("/app/src/keys.json") as file:
     keyData = json.load(file)
 
 
@@ -55,30 +55,38 @@ def renewToken():
     param = {"grant_type":"fb_exchange_token","client_id":appID,"client_secret":appSecret,"fb_exchange_token":accessToken}
     response = requests.get(url=url,params=param).json()
     print("Instagram access token renewed!")
-    with open("keys.json") as file:
+    with open("/app/src/keys.json") as file:
         keyData = json.load(file)
     keyData["accessToken"] = response["access_token"]
-    with open("keys.json","w") as file:
+    with open("/app/src/keys.json","w") as file:
         json.dump(keyData,file)
 
 
 
 def uploadImage(imageURL,caption):
-    url = graphURL + igAccountID + "/media"
-    param = {"access_token":accessToken,"caption":caption,"image_url":imageURL
-             #,"media_type":"STORIES"
-             }
-    response = requests.post(url,params=param)
-    print(response)
-    response = response.json()
+    try:
+        url = graphURL + igAccountID + "/media"
+        param = {"access_token":accessToken,"caption":caption,"image_url":imageURL
+                #,"media_type":"STORIES"
+                }
+        response = requests.post(url,params=param)
+        response = response.json()
+    except:
+        print("Error in uploading image to Instagram")
+        response = None
+    
     return response
 
 def uploadVideo(videoURL,caption):
-    url = graphURL + igAccountID + "/media"
-    print(url)
-    param = {"access_token":accessToken,"caption":caption,"video_url":videoURL,"media_type":"REELS"}
-    response = requests.post(url,params=param)
-    response = response.json()
+    try:
+        url = graphURL + igAccountID + "/media"
+        print(url)
+        param = {"access_token":accessToken,"caption":caption,"video_url":videoURL,"media_type":"REELS"}
+        response = requests.post(url,params=param)
+        response = response.json()
+    except:
+        print("Error in uploading video to Instagram")
+        response = None
     return response
 
 
@@ -86,28 +94,29 @@ def postOnIG():
     ctime = cstatTime()
     caption,imageSaved = createPostText(cstatPlaceID,ctime,False)
     if imageSaved:
-        picURL = IGVideoURL(ctime)
-        response = uploadVideo(picURL,caption)
-        time.sleep(20)
-        #print(response)
-        print("Instagram Image URL:\n" + picURL)
-        print("Instagram Post Text:\n" + caption)
-        print(response)
-        containerID = response['id']
-        url = graphURL + igAccountID + "/media_publish"
-        print("POST request URL: ",url)
-        param = {"access_token":accessToken,"creation_id":containerID}
-        response = requests.post(url,params=param)
-        print(response.json())
-        print("Succesfully posted on Instagram\n")
+        try:
+            picURL = IGVideoURL(ctime)
+            response = uploadVideo(picURL,caption)
+            time.sleep(20)
+            #print(response)
+            print("Instagram Image URL:\n" + picURL)
+            print("Instagram Post Text:\n" + caption)
+            print(response)
+            containerID = response['id']
+            url = graphURL + igAccountID + "/media_publish"
+            param = {"access_token":accessToken,"creation_id":containerID}
+            response = requests.post(url,params=param)
+            print("Succesfully posted on Instagram\n")
+        except:
+            print("Error in posting on Instagram\n")
     else:
         print("No image found - Instagram post not completed\n")
 
 def setAccessToken(token):
-    with open("keys.json") as file:
+    with open("/app/src/keys.json") as file:
         info = json.load(file)
         info["IG_accessToken"] = token
-    with open("keys.json","w") as file:
+    with open("/app/src/keys.json","w") as file:
         json.dump(info,file)
 
 

@@ -7,7 +7,7 @@ def sendEmail(text):
     serverName = "smtp.gmail.com"
     port = 465
     server = smtplib.SMTP_SSL(serverName, port)
-    with open("keys.json") as file:
+    with open("/app/src/keys.json") as file:
         data = json.load(file)
         email, password = data["email"], data["emailPassword"]
 

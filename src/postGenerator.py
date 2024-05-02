@@ -8,7 +8,7 @@ from moviepy.editor import ImageClip, AudioFileClip
 import time
 
 
-with open("keys.json") as file:
+with open("/app/src/keys.json") as file:
     keyData = json.load(file)
 
 weatherKey = keyData["weatherKey"]
@@ -23,19 +23,18 @@ statusDict = {"few clouds": "cloudy", "broken clouds": "cloudy", "overcast cloud
 def getFileCount(filePath,fileExtension):
     count = 0
     for file in os.listdir(filePath):
-        #print(- len(fileExtension),file[- len(fileExtension) - 1:])
         if file[- len(fileExtension) - 1:] == "." + fileExtension:
             count += 1
     return count
 
 
-def makeVideo(audioFileName,imageFileName="fileDump/portraitpic.jpeg",videoFileName="fileDump/portraitVideo.mp4"):
+def makeVideo(audioFileName,imageFileName="/app/files/fileDump/portraitpic.jpeg",videoFileName="/app/files/fileDump/portraitVideo.mp4"):
     audio = AudioFileClip(audioFileName)
-    imageClip = ImageClip(imageFileName).set_duration(30)
-    video = imageClip.set_audio(audio)
+    imageClip = ImageClip(imageFileName).with_duration(30)
+    video = imageClip.with_audio(audio)
     if video.size[0] > 1080:
         video = video.resize(width=1080,height=1440)
-    print(video.size)
+    print("Video dimensions",video.size)
     video.write_videofile(videoFileName, fps=30,
                           audio_codec="aac",
                           preset="ultrafast", threads=8)
@@ -51,11 +50,11 @@ def makeImage(originalImage,temp,timeStr,dateStr):
     #function that draws white text with black border on an image
     def textWithBorder(x,y,size,text):
         border = int(ceil(size / 50))
-        textOnImage.text((x- border, y- border), text, font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf",size), fill="#000")
-        textOnImage.text((x+ border, y- border), text, font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf",size), fill="#000")
-        textOnImage.text((x- border, y+ border), text, font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf",size), fill="#000")
-        textOnImage.text((x+ border, y+ border), text, font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf",size), fill="#000")
-        textOnImage.text((x,y),text=text,fill="#fff",font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf",size))
+        textOnImage.text((x- border, y- border), text, font=ImageFont.truetype("/app/files/DejaVuSans.ttf",size), fill="#000")
+        textOnImage.text((x+ border, y- border), text, font=ImageFont.truetype("/app/files/DejaVuSans.ttf",size), fill="#000")
+        textOnImage.text((x- border, y+ border), text, font=ImageFont.truetype("/app/files/DejaVuSans.ttf",size), fill="#000")
+        textOnImage.text((x+ border, y+ border), text, font=ImageFont.truetype("/app/files/DejaVuSans.ttf",size), fill="#000")
+        textOnImage.text((x,y),text=text,fill="#fff",font=ImageFont.truetype("/app/files/DejaVuSans.ttf",size))
 
     #opens background image from file name and creates size variables for temperature, time, and tag texts
     background = Image.open(originalImage)
@@ -118,9 +117,9 @@ def makeImage(originalImage,temp,timeStr,dateStr):
 
     #saves picture and closes file
     if width > height:
-        background.save("fileDump/landscapePic.jpeg",format="jpeg")
+        background.save("/app/files/fileDump/landscapePic.jpeg",format="jpeg")
     else:
-        background.save("fileDump/portraitpic.jpeg",format="jpeg")
+        background.save("/app/files/fileDump/portraitpic.jpeg",format="jpeg")
     background.close()
 
 
@@ -258,11 +257,11 @@ def createPostText(placeID,time,landscape):
 
     #gets file name of image
     imageFile = timeDict[timeSimple] + os.sep + statusDict[skies]
-    audioFile = "music" + os.sep + timeDict[timeSimple]
+    audioFile = "/app/files/music" + os.sep + timeDict[timeSimple]
     audioFile += os.sep + str(r % getFileCount(audioFile,"mp3") + 1) + ".mp3"
 
     if landscape:
-        imageFile = "images" + os.sep + "landscape" + os.sep + imageFile
+        imageFile = "/app/files/images" + os.sep + "landscape" + os.sep + imageFile
 
         # checks if there are any images in the folder - if there is none, returns with imageSaved=False
         # else saves a new image then returns with imageSaved=True
@@ -275,19 +274,18 @@ def createPostText(placeID,time,landscape):
 
         # adds temperature information to a background image to create image that will be posted
         makeImage(imageFile, temp, hour + ":" + minute + sec[-2:],dateStr)
-        makeVideo(audioFile,"fileDump/landscapePic.jpeg","fileDump/landscapeVid.mp4")
+        makeVideo(audioFile,"/app/files/fileDump/landscapePic.jpeg","/app/files/fileDump/landscapeVid.mp4")
     else:
-        imageFile = "images" + os.sep + "portrait" + os.sep + imageFile
+        imageFile = "/app/files/images" + os.sep + "portrait" + os.sep + imageFile
         l = getFileCount(imageFile,"jpeg")
         #a = getFileCount()
         if l == 0:
             return text, False
         else:
             imageFile = imageFile + os.sep + str(r % l + 1) + ".jpeg"
-        print(imageFile,audioFile)
         makeImage(imageFile,temp,hour + ":" + minute + sec[-2:],dateStr)
-        makeVideo(audioFile,"fileDump/portraitpic.jpeg","fileDump/portraitVid.mp4")
-        cloudinaryVideoUpload(code,"fileDump/portraitVid.mp4")
+        makeVideo(audioFile,"/app/files/fileDump/portraitpic.jpeg","/app/files/fileDump/portraitVid.mp4")
+        cloudinaryVideoUpload(code,"/app/files/fileDump/portraitVid.mp4")
 
 
     return text,True
